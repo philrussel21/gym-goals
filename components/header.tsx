@@ -1,5 +1,4 @@
 import {LogoutButton} from '@app/components';
-import {LinkType} from '@app/library/types';
 import {User} from '@supabase/supabase-js';
 import Link from 'next/link';
 
@@ -8,8 +7,8 @@ type HeaderProperties = {
 };
 
 const Header = ({user}: HeaderProperties): JSX.Element => (
-  <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-    <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm text-foreground">
+  <nav className="w-full flex justify-center border-b h-16">
+    <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm text-white">
       <div>
         {user ? (
           <div className="flex items-center gap-4">
@@ -17,10 +16,7 @@ const Header = ({user}: HeaderProperties): JSX.Element => (
             <LogoutButton />
           </div>
         ) : (
-          <Link
-            href="/login"
-            className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-          >
+          <Link href="/login" className="py-2 px-4 rounded-md no-underline">
             Login
           </Link>
         )}
