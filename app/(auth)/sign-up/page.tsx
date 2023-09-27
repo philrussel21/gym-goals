@@ -1,4 +1,5 @@
 import {AuthForm} from '@app/components';
+import {routes} from '@app/config/routes';
 import Link from 'next/link';
 
 const SignUp = () => {
@@ -8,7 +9,7 @@ const SignUp = () => {
         <AuthForm variant="register" />
         <p className="text-white text-center">
           <span>Already have an account? </span>
-          <Link href="/login">
+          <Link href={routes.login}>
             <span className="underline">Sign in</span>
           </Link>
         </p>

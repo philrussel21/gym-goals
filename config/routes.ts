@@ -4,4 +4,6 @@ const routes = {
   signup: '/sign-up',
 }
 
-export default routes;
+export {
+  routes,
+};

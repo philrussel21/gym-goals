@@ -1,6 +1,6 @@
 'use client';
 
-import routes from '@app/config/routes';
+import {routes} from '@app/config/routes';
 import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
 import {useRouter} from 'next/navigation';
 import {useCallback, useState} from 'react';

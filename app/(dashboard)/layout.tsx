@@ -3,6 +3,7 @@ import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
 import {cookies} from 'next/headers';
 import {Header} from '@app/components';
 import {redirect} from 'next/navigation';
+import {routes} from '@app/config/routes';
 
 type AuthLayoutProperties = {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ const AuthLayout = async ({
   } = await supabase.auth.getUser();
 
   if (user === null) {
-    return redirect('/login');
+    return redirect(routes.login);
   }
 
   return (

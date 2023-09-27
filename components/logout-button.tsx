@@ -1,5 +1,6 @@
 'use client';
 
+import {routes} from '@app/config/routes';
 import {createClientComponentClient} from '@supabase/auth-helpers-nextjs';
 import {useRouter} from 'next/navigation';
 import {useCallback} from 'react';
@@ -15,7 +16,7 @@ export default function LogoutButton() {
       console.error(error);
     } else {
       router.refresh();
-      router.push('/login');
+      router.push(routes.login);
     }
   }, [router]);
   return (

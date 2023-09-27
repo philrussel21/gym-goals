@@ -1,4 +1,5 @@
 import {LogoutButton} from '@app/components';
+import {routes} from '@app/config/routes';
 import {User} from '@supabase/supabase-js';
 import Link from 'next/link';
 
@@ -16,7 +17,10 @@ const Header = ({user}: HeaderProperties): JSX.Element => (
             <LogoutButton />
           </div>
         ) : (
-          <Link href="/login" className="py-2 px-4 rounded-md no-underline">
+          <Link
+            href={routes.login}
+            className="py-2 px-4 rounded-md no-underline"
+          >
             Login
           </Link>
         )}
