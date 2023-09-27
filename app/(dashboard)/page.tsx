@@ -1,20 +1,35 @@
-import {createServerComponentClient} from '@supabase/auth-helpers-nextjs';
-import {cookies} from 'next/headers';
-import Link from 'next/link';
-import {LogoutButton} from '@app/components';
+import {ExerciseCard} from '@app/components';
+import {ExerciseCardDTO} from '../api/exercises/route';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Index() {
-  const supabase = createServerComponentClient({cookies});
+const getData = async () => {
+  try {
+    const response = await fetch(`${process.env.BASE_URL}/api/exercises`);
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-  const {
-    data: {user},
-  } = await supabase.auth.getUser();
-
+const Index = async () => {
+  const exercises: ExerciseCardDTO[] = await getData();
   return (
-    <div className="w-full flex flex-col items-center">
-      <h1 className="text-white">Hello world!</h1>
+    <div className="w-full flex flex-col items-center container">
+      <div className="grid gap-4 mt-6">
+        {exercises.map((exercise) => (
+          <ExerciseCard
+            key={exercise.id}
+            name={exercise.name}
+            type={exercise.type}
+            muscle={exercise.muscle}
+            equipment={exercise.equipment}
+            difficulty={exercise.difficulty}
+          />
+        ))}
+      </div>
     </div>
   );
-}
+};
+
+export default Index;
