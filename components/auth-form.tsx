@@ -33,13 +33,13 @@ const AuthForm = ({variant}: AuthFormProperties): JSX.Element => {
   const [state, setState] = useState(initialState);
   const router = useRouter();
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(async ({email, password}: FormState) => {
     setState((current) => ({...current, isLoading: true}));
     try {
       const supabase = createClientComponentClient();
       const {error} = await supabase.auth.signInWithPassword({
-        email: formState.email,
-        password: formState.password,
+        email: email,
+        password: password,
       });
 
       if (error !== null) {
@@ -58,13 +58,13 @@ const AuthForm = ({variant}: AuthFormProperties): JSX.Element => {
     }
   }, []);
 
-  const handleRegister = useCallback(async () => {
+  const handleRegister = useCallback(async ({email, password}: FormState) => {
     setState((current) => ({...current, isLoading: true}));
     try {
       const supabase = createClientComponentClient();
       const {error} = await supabase.auth.signUp({
-        email: formState.email,
-        password: formState.password,
+        email: email,
+        password: password,
       });
 
       if (error !== null) {
@@ -87,12 +87,12 @@ const AuthForm = ({variant}: AuthFormProperties): JSX.Element => {
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (variant === 'login') {
-        handleLogin();
+        handleLogin(formState);
       } else {
-        handleRegister();
+        handleRegister(formState);
       }
     },
-    []
+    [formState]
   );
 
   const handleInputChange = useCallback(

@@ -14,6 +14,7 @@ export default function LogoutButton() {
     if (error !== null) {
       console.error(error);
     } else {
+      router.refresh();
       router.push('/login');
     }
   }, [router]);
