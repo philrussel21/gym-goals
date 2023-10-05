@@ -4,6 +4,10 @@ type LinkType = {
   url: string;
 }
 
+type Params = {
+  slug: string;
+};
+
 const EXERCISE_TYPES = ['cardio', 'olympic_weightlifting', 'plyometrics', 'powerlifting', 'strength', 'stretching', 'strongman'] as const;
 type ExerciseType = typeof EXERCISE_TYPES[number];
 
@@ -14,6 +18,7 @@ const DIFFICULTY = ['beginner','intermediate','expert'];
 type DifficultyType = typeof DIFFICULTY[number];
 
 export type {
+  Params,
   LinkType,
   ExerciseType,
   MuscleGroupType,

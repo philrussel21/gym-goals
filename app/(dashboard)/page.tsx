@@ -1,5 +1,6 @@
 import {ExerciseCard} from '@app/components';
 import {ExerciseCardDTO} from '../api/exercises/route';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,14 +19,15 @@ const Index = async () => {
     <div className="w-full flex flex-col items-center container">
       <div className="grid gap-4 mt-6">
         {exercises.map((exercise) => (
-          <ExerciseCard
-            key={exercise.id}
-            name={exercise.name}
-            type={exercise.type}
-            muscle={exercise.muscle}
-            equipment={exercise.equipment}
-            difficulty={exercise.difficulty}
-          />
+          <Link href={`/exercise/${exercise.slug}`} key={exercise.slug}>
+            <ExerciseCard
+              name={exercise.name}
+              type={exercise.type}
+              muscle={exercise.muscle}
+              equipment={exercise.equipment}
+              difficulty={exercise.difficulty}
+            />
+          </Link>
         ))}
       </div>
     </div>

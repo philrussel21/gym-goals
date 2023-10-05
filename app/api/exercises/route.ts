@@ -11,7 +11,7 @@ type ExerciseCardQuery = {
 }
 
 type ExerciseCardDTO = {
-  id: string;
+  slug: string;
   name: string;
   type: ExerciseType;
   muscle: MuscleGroupType;
@@ -27,7 +27,7 @@ export const GET = async (): Promise<NextResponse> => {
   });
   const data:ExerciseCardQuery[] = await response.json();
   const dto: ExerciseCardDTO[] = data.map((exercise) => ({
-    id: formatToSlug(exercise.name),
+    slug: formatToSlug(exercise.name),
     ...exercise,
   }));
   return NextResponse.json(dto, {status: 200});
