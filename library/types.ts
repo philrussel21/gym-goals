@@ -1,3 +1,4 @@
+import { PostgrestError } from "@supabase/supabase-js";
 
 type LinkType = {
   label: string;
@@ -7,6 +8,11 @@ type LinkType = {
 type Params = {
   slug: string;
 };
+
+type SupabaseDatabaseResponse<T> = {
+  data: T | null;
+  error: PostgrestError | null;
+}
 
 const EXERCISE_TYPES = ['cardio', 'olympic_weightlifting', 'plyometrics', 'powerlifting', 'strength', 'stretching', 'strongman'] as const;
 type ExerciseType = typeof EXERCISE_TYPES[number];
@@ -23,4 +29,5 @@ export type {
   ExerciseType,
   MuscleGroupType,
   DifficultyType,
+  SupabaseDatabaseResponse,
 }
