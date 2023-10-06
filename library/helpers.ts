@@ -1,5 +1,5 @@
 const formatToSlug = (str: string): string => {
-  return str.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
+  return str.replace(/-/g,' ').trim().toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
 };
 
 const formatToName = (str: string): string => {
