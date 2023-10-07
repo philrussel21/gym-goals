@@ -1,12 +1,15 @@
 import {ExerciseCard} from '@app/components';
 import {ExerciseCardDTO} from '../api/exercises/route';
 import Link from 'next/link';
+import {headers} from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
 const getData = async () => {
   try {
-    const response = await fetch(`${process.env.BASE_URL}/api/exercises`);
+    const response = await fetch(`${process.env.BASE_URL}/api/exercises`, {
+      headers: headers(),
+    });
     return await response.json();
   } catch (error) {
     console.log(error);
