@@ -61,7 +61,7 @@ type ErrorResponse = {
   error: string;
 }
 
-export const GET = async (_request: NextRequest): Promise<NextResponse<DashboardDTO | ErrorResponse>> => {
+export const GET = async (): Promise<NextResponse<DashboardDTO | ErrorResponse>> => {
   try {
   const supabase = createRouteHandlerClient({cookies});
   const {data: userData, error: userError} = await supabase.auth.getSession();

@@ -25,7 +25,7 @@ const AuthLayout = async ({
   return (
     <Fragment>
       <Header user={user} />
-      {children}
+      <div className="container">{children}</div>
     </Fragment>
   );
 };

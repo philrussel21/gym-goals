@@ -19,7 +19,7 @@ const getData = async () => {
 const Index = async () => {
   const exercises: ExerciseCardDTO[] = await getData();
   return (
-    <div className="w-full flex flex-col items-center container">
+    <div className="w-full flex flex-col items-center">
       <div className="grid gap-4 mt-6">
         {exercises.map((exercise) => (
           <Link href={`/exercise/${exercise.slug}`} key={exercise.slug}>

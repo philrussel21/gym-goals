@@ -28,7 +28,7 @@ const ExerciseDetailsPage = async ({
   }
 
   return (
-    <div className="w-full flex flex-col items-center container text-white">
+    <div className="w-full flex flex-col items-center">
       <h1 className="text-2xl font-bold mt-6">{exercise.name}</h1>
       <p>type: {exercise.type}</p>
       <p>muscle: {exercise.muscle}</p>

@@ -19,7 +19,7 @@ const ExerciseCard = ({
   equipment,
   difficulty,
 }: ExerciseCardProperties): JSX.Element => (
-  <section className="bg-gray-300 p-4 rounded-md">
+  <section className="bg-gray-300 p-4 rounded-md text-black">
     <h3 className="text-2xl font-bold">{name}</h3>
     <p className="text-lg font-semibold">{type}</p>
     <p className="text-lg font-semibold">{muscle}</p>
