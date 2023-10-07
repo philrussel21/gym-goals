@@ -65,6 +65,9 @@ const AuthForm = ({variant}: AuthFormProperties): JSX.Element => {
       const {error} = await supabase.auth.signUp({
         email: email,
         password: password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        },
       });
 
       if (error !== null) {
