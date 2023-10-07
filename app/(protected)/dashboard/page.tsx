@@ -1,4 +1,5 @@
 import {DashboardDTO} from '@app/app/api/dashboard/route';
+import {UserExerciseForm} from '@app/components';
 import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
 import {isArray, isNil} from 'remeda';
@@ -45,6 +46,9 @@ const DashboardPage = async () => {
                 )}
               </div>
             ))}
+        </div>
+        <div className="mt-16 mx-4">
+          <UserExerciseForm exercises={data.exercises} />
         </div>
       </div>
     </div>
