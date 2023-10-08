@@ -1,13 +1,13 @@
 'use client';
 
-import {ExerciseDTO} from '@app/app/api/dashboard/route';
+import {ExerciseOptionDTO} from '@app/app/api/dashboard/route';
 import {useForm} from 'react-hook-form';
 import Button from './button';
 import {isNil} from 'remeda';
 
 type UserExerciseFormProperties = {
   isLoading: boolean;
-  exercises: ExerciseDTO[];
+  exercises: ExerciseOptionDTO[];
   defaultValues?: UserExerciseFormValues;
   submitLabel: string;
   onSubmit: (data: UserExerciseFormValues) => void;

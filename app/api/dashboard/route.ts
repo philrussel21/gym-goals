@@ -1,8 +1,46 @@
-import { exercisesTable, userExercisesTable } from "@app/library/constants";
+import { exercisesTable, programsTable, userExercisesTable, usersTable } from "@app/library/constants";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { PostgrestResponse } from "@supabase/supabase-js";
+import { PostgrestResponse, PostgrestSingleResponse } from "@supabase/supabase-js";
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server";
+
+type UserDataQuery = {
+  first_name: string;
+  last_name: string;
+  user_exercises: UserExerciseQuery[];
+  programs: UserProgramQuery[];
+};
+
+type UserDataDTO = {
+  firstName: string;
+  lastName: string;
+  exercises: UserExerciseDTO[];
+  programs: UserProgramDTO[];
+};
+
+type UserProgramDTO = {
+  id: string;
+  name: string;
+  description: string;
+  programExercises: ProgramExerciseDTO[];
+};
+
+type UserProgramQuery = {
+  id: string;
+  name: string;
+  description: string;
+  program_exercises: ProgramExerciseQuery[];
+};
+
+type ProgramExerciseDTO = {
+  id: string;
+  exercise: ExerciseDTO;
+}
+
+type ProgramExerciseQuery = {
+  id: string;
+  exercise: ExerciseQuery;
+}
 
 type UserExerciseQuery = {
   id: string;
@@ -11,20 +49,7 @@ type UserExerciseQuery = {
   sets: number | null;
   weight: number | null;
   distance: number | null;
-  exercise : {
-    id: string,
-    slug: string;
-    name: string;
-    type: {
-      name: string;
-    };
-    muscle: {
-      name: string;
-    };
-    difficulty: {
-      name: string;
-    };
-  };
+  exercise : ExerciseQuery;
 };
 
 type UserExerciseDTO = {
@@ -34,80 +59,133 @@ type UserExerciseDTO = {
   sets: number | null;
   weight: number | null;
   distance: number | null;
-  exercise : {
-    id: string,
-    slug: string;
-    name: string;
-    type: string;
-    muscle: string;
-    difficulty: string;
-  };
+  exercise : ExerciseDTO;
 }
 
 type ExerciseQuery = {
+  id: string;
+  slug: string;
+  name: string;
+  equipment: string;
+  type: {
+    name: string;
+  };
+  muscle: {
+    name: string;
+  };
+  difficulty: {
+    name: string;
+  };
+}
+
+type ExerciseDTO = {
+  id: string;
+  slug: string;
+  name: string;
+  equipment: string;
+  type: string;
+  muscle: string;
+  difficulty: string;
+}
+
+type ExerciseOptionQuery = {
   name: string;
   id: string;
 };
 
-type ExerciseDTO = {
+type ExerciseOptionDTO = {
   name: string;
   id: string;
 };
 
 type DashboardDTO = {
-  userExercises: UserExerciseDTO[];
-  exercises: ExerciseDTO[];
+  userData: UserDataDTO;
+  exercises: ExerciseOptionDTO[];
 }
 
 type ErrorResponse = {
   error: string;
 }
 
+const formatExercise = (exercise: ExerciseQuery): ExerciseDTO => ({
+  ...exercise,
+  difficulty: exercise.difficulty.name,
+  type: exercise.type.name,
+  muscle: exercise.muscle.name
+});
+
+const formatUserExercise = (userExercise: UserExerciseQuery): UserExerciseDTO => ({
+  ...userExercise,
+  exercise: formatExercise(userExercise.exercise),
+});
+
+const formatUserProgram = (userProgram: UserProgramQuery): UserProgramDTO => ({
+  ...userProgram,
+  programExercises: userProgram.program_exercises.map((programExercise) => ({
+    ...programExercise,
+    exercise: formatExercise(programExercise.exercise),
+  })),
+});
+
 export const GET = async (): Promise<NextResponse<DashboardDTO | ErrorResponse>> => {
   try {
   const supabase = createRouteHandlerClient({cookies});
-  const {data: userData, error: userError} = await supabase.auth.getSession();
+  const {data: authData, error: authError} = await supabase.auth.getSession();
 
-  if (userData.session === null || userError !== null) {
-    return NextResponse.json({error: userError?.message ?? 'Error fetching user'}, {status: 401});
+  if (authData.session === null || authError !== null) {
+    return NextResponse.json({error: authError?.message ?? 'Error fetching user'}, {status: 401});
   }
 
-  const {data: userExerciseData, error: userExerciseError} = await supabase
-    .from(userExercisesTable)
+  const {data: userData, error: userDataError} = await supabase
+    .from(usersTable)
     .select(`
       *, 
-      exercise: exercise_id(
-        id,
-        name,
-        slug,
-        difficulty: difficulty_id(name),
-        type: exercise_type_id(name),
-        muscle: muscle_group_id(name)
-      )`)
-    .eq('user_id', userData.session.user.id) as PostgrestResponse<UserExerciseQuery>;
+      ${userExercisesTable} (
+        *,
+        exercise: exercises (
+          *,
+          difficulty: difficulty_id (name),
+          type: exercise_type_id (name),
+          muscle: muscle_group_id (name)
+        )
+      ),
+      ${programsTable} (
+        *,
+        program_exercises (
+          *,
+          exercise: exercises (
+            *,
+            difficulty: difficulty_id (name),
+            type: exercise_type_id (name),
+            muscle: muscle_group_id (name)
+          )
+        )
+      )
+    `)
+    .eq('id', authData.session.user.id)
+    .single() as PostgrestSingleResponse<UserDataQuery>;
 
   const {data: exercisesData, error: exercisesError} = await supabase
     .from(exercisesTable)
-    .select('name, id') as PostgrestResponse<ExerciseQuery>;
+    .select('name, id') as PostgrestResponse<ExerciseOptionQuery>;
 
-  if (userExerciseError !== null || exercisesError !== null) {
+  if (userDataError !== null || exercisesError !== null) {
     throw new Error('Database query error');
   }
 
-  const userExercisesDTO = userExerciseData.map((userExercise) => ({
-    ...userExercise,
-    exercise: {
-      ...userExercise.exercise,
-      difficulty: userExercise.exercise.difficulty.name,
-      type: userExercise.exercise.type.name,
-      muscle: userExercise.exercise.muscle.name
-    }
-  }));
+  console.log(userData.programs[0].program_exercises);
 
-  const exercisesDTO = exercisesData.map((exercise) => ({...exercise}));
+  const userDataDTO: UserDataDTO = {
+    firstName: userData.first_name,
+    lastName: userData.last_name,
+    exercises: userData.user_exercises.map(formatUserExercise),
+    programs: userData.programs.map(formatUserProgram),
+  };
+
+  const exercisesDTO: ExerciseOptionDTO[] = exercisesData.map((exercise) => ({...exercise}));
 
   const data = {
-    userExercises: userExercisesDTO,
+    userData: userDataDTO,
     exercises: exercisesDTO,
   };
 
@@ -120,8 +198,14 @@ export const GET = async (): Promise<NextResponse<DashboardDTO | ErrorResponse>>
 export type {
   UserExerciseQuery,
   UserExerciseDTO,
-  ExerciseQuery,
-  ExerciseDTO,
+  ExerciseOptionDTO,
+  ExerciseOptionQuery,
   DashboardDTO,
-  ErrorResponse
+  ErrorResponse,
+  UserProgramDTO,
+  UserProgramQuery,
+  ProgramExerciseDTO,
+  ProgramExerciseQuery,
+  ExerciseDTO,
+  ExerciseQuery,
 };

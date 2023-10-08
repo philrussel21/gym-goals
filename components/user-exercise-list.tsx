@@ -1,6 +1,6 @@
 'use client';
 
-import {ExerciseDTO, UserExerciseDTO} from '@app/app/api/dashboard/route';
+import {ExerciseOptionDTO, UserExerciseDTO} from '@app/app/api/dashboard/route';
 import {isArray, isNil} from 'remeda';
 import Button from './button';
 import UserExerciseForm, {UserExerciseFormValues} from './user-exercise-form';
@@ -14,7 +14,7 @@ import {useRouter} from 'next/navigation';
 
 type UserExerciseListProperties = {
   userExercises: UserExerciseDTO[];
-  exercises: ExerciseDTO[];
+  exercises: ExerciseOptionDTO[];
 };
 
 type FormVariant = 'add' | 'update';
@@ -157,14 +157,14 @@ const UserExerciseList = ({
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2>User Exercises</h2>
+        <h3>User Exercises</h3>
         <Button label="Add exercise" onClick={handleAddClick} />
       </div>
       <div className="mt-4 space-y-4">
         {isArray(userExercises) &&
           userExercises.map((exercise) => (
             <div key={exercise.id} className="bg-gray-300 text-black p-4">
-              <h3>{exercise.exercise.name}</h3>
+              <h4>{exercise.exercise.name}</h4>
               <p>difficulty: {exercise.exercise.difficulty}</p>
               <p>muscle: {exercise.exercise.muscle}</p>
               <p>type: {exercise.exercise.type}</p>
