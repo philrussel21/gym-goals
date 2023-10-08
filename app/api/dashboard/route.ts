@@ -22,6 +22,7 @@ type UserProgramDTO = {
   id: string;
   name: string;
   description: string;
+  isPublic: string;
   programExercises: ProgramExerciseDTO[];
 };
 
@@ -29,6 +30,7 @@ type UserProgramQuery = {
   id: string;
   name: string;
   description: string;
+  public: string;
   program_exercises: ProgramExerciseQuery[];
 };
 
@@ -121,6 +123,7 @@ const formatUserExercise = (userExercise: UserExerciseQuery): UserExerciseDTO =>
 
 const formatUserProgram = (userProgram: UserProgramQuery): UserProgramDTO => ({
   ...userProgram,
+  isPublic: userProgram.public,
   programExercises: userProgram.program_exercises.map((programExercise) => ({
     ...programExercise,
     exercise: formatExercise(programExercise.exercise),
@@ -172,8 +175,6 @@ export const GET = async (): Promise<NextResponse<DashboardDTO | ErrorResponse>>
   if (userDataError !== null || exercisesError !== null) {
     throw new Error('Database query error');
   }
-
-  console.log(userData.programs[0].program_exercises);
 
   const userDataDTO: UserDataDTO = {
     firstName: userData.first_name,

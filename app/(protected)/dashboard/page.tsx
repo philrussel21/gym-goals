@@ -32,7 +32,10 @@ const DashboardPage = async () => {
         />
       </div>
       <div className="mt-4">
-        <UserProgramList userPrograms={data.userData.programs} />
+        <UserProgramList
+          userPrograms={data.userData.programs}
+          exercises={data.exercises}
+        />
       </div>
     </div>
   );
