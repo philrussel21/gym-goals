@@ -1,15 +1,19 @@
 'use client';
 
 import {ExerciseDTO} from '@app/app/api/dashboard/route';
-import {useRouter} from 'next/navigation';
-import {useCallback, useState} from 'react';
 import {useForm} from 'react-hook-form';
+import Button from './button';
 
 type UserExerciseFormProperties = {
+  isLoading: boolean;
   exercises: ExerciseDTO[];
+  defaultValues?: UserExerciseFormValues;
+  submitLabel: string;
+  onSubmit: (data: UserExerciseFormValues) => void;
 };
 
 type UserExerciseFormValues = {
+  id?: string;
   exerciseId: string;
   date: string;
   repetitions: number;
@@ -19,43 +23,19 @@ type UserExerciseFormValues = {
 };
 
 const UserExerciseForm = ({
+  isLoading,
   exercises,
+  defaultValues,
+  submitLabel,
+  onSubmit,
 }: UserExerciseFormProperties): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: {errors},
-  } = useForm<UserExerciseFormValues>();
-
-  const onSubmit = useCallback(async (data: UserExerciseFormValues) => {
-    setIsLoading(true);
-    const payload = {
-      ...data,
-      repetitions: isNaN(data.repetitions) ? null : data.repetitions,
-      sets: isNaN(data.sets) ? null : data.sets,
-      weight: isNaN(data.weight) ? null : data.weight,
-      distance: isNaN(data.distance) ? null : data.distance,
-    };
-    try {
-      const response = await fetch('/api/user-exercise', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok && data === null) {
-        throw new Error('Error creating new user exercise');
-      }
-      router.refresh();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  } = useForm<UserExerciseFormValues>({
+    defaultValues,
+  });
 
   return (
     <form className="p-4 bg-white text-black" onSubmit={handleSubmit(onSubmit)}>
@@ -123,7 +103,12 @@ const UserExerciseForm = ({
           {errors.distance && <p>{errors.distance.message}</p>}
         </div>
         <div>
-          <button type="submit">Submit</button>
+          <Button
+            type="submit"
+            label={submitLabel}
+            disabled={isLoading}
+            className="disabled:opacity-30"
+          />
         </div>
       </div>
     </form>

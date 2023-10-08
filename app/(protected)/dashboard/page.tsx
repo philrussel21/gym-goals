@@ -1,8 +1,7 @@
 import {DashboardDTO} from '@app/app/api/dashboard/route';
-import {UserExerciseForm} from '@app/components';
+import UserExerciseList from '@app/components/user-exercise-list';
 import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
-import {isArray, isNil} from 'remeda';
 
 const getData = async (): Promise<DashboardDTO | null> => {
   try {
@@ -26,30 +25,10 @@ const DashboardPage = async () => {
     <div>
       <h1>Dashboard</h1>
       <div className="mt-4">
-        <h2>User Exercises</h2>
-        <div className="mt-4">
-          {isArray(data.userExercises) &&
-            data.userExercises.map((exercise) => (
-              <div key={exercise.id}>
-                <h3>{exercise.exercise.name}</h3>
-                <p>type: {exercise.exercise.difficulty}</p>
-                <p>muscle: {exercise.exercise.muscle}</p>
-                <p>equipment: {exercise.exercise.type}</p>
-                <p>date: {exercise.date}</p>
-                {!isNil(exercise.weight) && <p>weight: {exercise.weight}</p>}
-                {!isNil(exercise.repetitions) && (
-                  <p>reps: {exercise.repetitions}</p>
-                )}
-                {!isNil(exercise.sets) && <p>sets: {exercise.sets}</p>}
-                {!isNil(exercise.distance) && (
-                  <p>duration: {exercise.distance}</p>
-                )}
-              </div>
-            ))}
-        </div>
-        <div className="mt-16 mx-4">
-          <UserExerciseForm exercises={data.exercises} />
-        </div>
+        <UserExerciseList
+          userExercises={data.userExercises}
+          exercises={data.exercises}
+        />
       </div>
     </div>
   );

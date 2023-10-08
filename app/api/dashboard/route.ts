@@ -2,7 +2,7 @@ import { exercisesTable, userExercisesTable } from "@app/library/constants";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { PostgrestResponse } from "@supabase/supabase-js";
 import { cookies } from "next/headers"
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 type UserExerciseQuery = {
   id: string;
@@ -12,6 +12,7 @@ type UserExerciseQuery = {
   weight: number | null;
   distance: number | null;
   exercise : {
+    id: string,
     slug: string;
     name: string;
     type: {
@@ -34,6 +35,7 @@ type UserExerciseDTO = {
   weight: number | null;
   distance: number | null;
   exercise : {
+    id: string,
     slug: string;
     name: string;
     type: string;
@@ -75,6 +77,7 @@ export const GET = async (): Promise<NextResponse<DashboardDTO | ErrorResponse>>
     .select(`
       *, 
       exercise: exercise_id(
+        id,
         name,
         slug,
         difficulty: difficulty_id(name),
