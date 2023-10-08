@@ -1,5 +1,6 @@
 import {DashboardDTO} from '@app/app/api/dashboard/route';
 import UserExerciseList from '@app/components/user-exercise-list';
+import UserProgramList from '@app/components/user-program-list';
 import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
 
@@ -26,9 +27,12 @@ const DashboardPage = async () => {
       <h1>Dashboard</h1>
       <div className="mt-4">
         <UserExerciseList
-          userExercises={data.userExercises}
+          userExercises={data.userData.exercises}
           exercises={data.exercises}
         />
+      </div>
+      <div className="mt-4">
+        <UserProgramList userPrograms={data.userData.programs} />
       </div>
     </div>
   );
