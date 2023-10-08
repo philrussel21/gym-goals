@@ -8,10 +8,10 @@ import { isNil } from "remeda";
 type PostUserExercisePayload = {
   exercise_id: string;
   date: string;
-  repetitions: number | null;
-  sets: number | null;
-  weight: number | null;
-  distance: number | null;
+  repetitions: number;
+  sets: number;
+  weight: number;
+  distance: number;
 }
 
 type PutUserExercisePayload = PostUserExercisePayload & {id: string};
@@ -77,7 +77,7 @@ export const PUT = async (request: NextRequest): Promise<NextResponse> => {
   .eq('id', updatedExercise.id);
 
   if (!isNil(error)) {
-    return NextResponse.json({data, error: error?.message}, {status: 500});
+    return NextResponse.json({error: error?.message}, {status: 500});
   }
 
   return NextResponse.json({success: true}, {status: 200});

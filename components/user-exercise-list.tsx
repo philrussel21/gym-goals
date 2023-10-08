@@ -193,7 +193,9 @@ const UserExerciseList = ({
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <Dialog.Panel className="mx-auto max-w-sm rounded bg-white">
             <div className="flex justify-between items-center">
-              <Dialog.Title>Complete your order</Dialog.Title>
+              <Dialog.Title>
+                {`${state.formVariant === 'add' ? 'Add' : 'Update'} Exercise`}
+              </Dialog.Title>
               <Button label="Close" onClick={handleModalClose} />
             </div>
             <div className="mt-4">
