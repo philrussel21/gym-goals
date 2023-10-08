@@ -5,7 +5,8 @@ type BaseButtonProperties = {
 type ButtonProperties = BaseButtonProperties &
   React.ComponentPropsWithoutRef<'button'>;
 
-const baseButtonClasses = 'bg-gray-800 text-white rounded-md py-2 px-4';
+const baseButtonClasses =
+  'bg-gray-800 text-white rounded-md py-2 px-4 disabled:opacity-30';
 
 const Button = ({
   label,

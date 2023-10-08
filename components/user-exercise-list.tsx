@@ -132,6 +132,28 @@ const UserExerciseList = ({
     [state.formVariant, state.formDefaultValues]
   );
 
+  const handleDelete = useCallback(async () => {
+    setState((current) => ({...current, isFormLoading: true}));
+    try {
+      const response = await fetch('/api/user-exercise', {
+        method: 'DELETE',
+        body: JSON.stringify({id: state.formDefaultValues?.id}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error deleting user exercise');
+      }
+      router.refresh();
+      setState((current) => ({...current, isFormShowing: false}));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setState((current) => ({...current, isFormLoading: false}));
+    }
+  }, [state.formDefaultValues]);
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -155,9 +177,8 @@ const UserExerciseList = ({
               {!isNil(exercise.distance) && (
                 <p>duration: {exercise.distance}</p>
               )}
-              <div className="flex space-x-4 mt-4">
+              <div className="mt-4">
                 <Button label="Edit" onClick={handleEditClick(exercise)} />
-                <Button label="Delete" />
               </div>
             </div>
           ))}
@@ -182,6 +203,7 @@ const UserExerciseList = ({
                 defaultValues={state.formDefaultValues}
                 submitLabel={state.formVariant === 'add' ? 'Add' : 'Update'}
                 onSubmit={handleSubmit}
+                onDelete={handleDelete}
               />
             </div>
           </Dialog.Panel>

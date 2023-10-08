@@ -83,6 +83,30 @@ export const PUT = async (request: NextRequest): Promise<NextResponse> => {
   return NextResponse.json({success: true}, {status: 200});
 }
 
+export const DELETE = async (request: NextRequest): Promise<NextResponse> => {
+  const payload: {id: string} = await request.json();
+  if (isNil(payload.id)) {
+    return NextResponse.json({error: 'Missing id'}, {status: 400});
+  }
+  const supabase = createRouteHandlerClient({cookies});
+  const {data: userData, error: userError} = await supabase.auth.getSession();
+
+  if (isNil(userData.session) || !isNil(userError)) {
+    return NextResponse.json({error: userError?.message ?? 'Error fetching user'}, {status: 401});
+  }
+
+  const {data, error} = await supabase
+  .from(userExercisesTable)
+  .delete()
+  .eq('id', payload.id);
+
+  if (!isNil(error)) {
+    return NextResponse.json({data, error: error?.message}, {status: 500});
+  }
+
+  return NextResponse.json({success: true}, {status: 200});
+}
+
 export type {
   PostUserExercisePayload,
   PutUserExercisePayload,

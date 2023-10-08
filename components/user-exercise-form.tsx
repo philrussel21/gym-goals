@@ -3,6 +3,7 @@
 import {ExerciseDTO} from '@app/app/api/dashboard/route';
 import {useForm} from 'react-hook-form';
 import Button from './button';
+import {isNil} from 'remeda';
 
 type UserExerciseFormProperties = {
   isLoading: boolean;
@@ -10,6 +11,7 @@ type UserExerciseFormProperties = {
   defaultValues?: UserExerciseFormValues;
   submitLabel: string;
   onSubmit: (data: UserExerciseFormValues) => void;
+  onDelete: () => void;
 };
 
 type UserExerciseFormValues = {
@@ -28,6 +30,7 @@ const UserExerciseForm = ({
   defaultValues,
   submitLabel,
   onSubmit,
+  onDelete,
 }: UserExerciseFormProperties): JSX.Element => {
   const {
     register,
@@ -102,13 +105,16 @@ const UserExerciseForm = ({
           />
           {errors.distance && <p>{errors.distance.message}</p>}
         </div>
-        <div>
-          <Button
-            type="submit"
-            label={submitLabel}
-            disabled={isLoading}
-            className="disabled:opacity-30"
-          />
+        <div className="flex space-x-4 mt-4">
+          <Button type="submit" label={submitLabel} disabled={isLoading} />
+          {!isNil(defaultValues?.id) && (
+            <Button
+              label="Delete"
+              type="button"
+              disabled={isLoading}
+              onClick={onDelete}
+            />
+          )}
         </div>
       </div>
     </form>
