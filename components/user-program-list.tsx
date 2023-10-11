@@ -46,6 +46,16 @@ const UserProgramList = ({
     });
   }, []);
 
+  const updateProgram = useCallback(async (payload: UserProgramFormValues) => {
+    return await fetch('/api/user-program', {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }, []);
+
   const handleAddClick = useCallback(() => {
     setState((current) => ({
       ...current,
@@ -55,9 +65,26 @@ const UserProgramList = ({
     }));
   }, []);
 
-  const handleEditClick = useCallback(() => {
-    // TODO: implement
-  }, []);
+  const handleEditClick = useCallback(
+    (userProgram: UserProgramDTO) => () => {
+      console.log('USER PROGRAM', userProgram);
+      setState((current) => ({
+        ...current,
+        isFormShowing: true,
+        formDefaultValues: {
+          id: userProgram.id,
+          name: userProgram.name,
+          description: userProgram.description,
+          isPublic: Boolean(userProgram.isPublic),
+          programExercises: userProgram.programExercises.map(
+            (programExercise) => programExercise.exercise.id
+          ),
+        },
+        formVariant: 'update',
+      }));
+    },
+    []
+  );
 
   const handleSubmit = useCallback(
     async (data: UserProgramFormValues) => {
@@ -67,8 +94,7 @@ const UserProgramList = ({
         if (state.formVariant === 'add') {
           response = await addProgram(data);
         } else {
-          // TODO: impelement update
-          response = await addProgram(data);
+          response = await updateProgram(data);
         }
         if (!response.ok && isNil(data)) {
           throw new Error('Error creating new program');
@@ -88,9 +114,27 @@ const UserProgramList = ({
     setState(initialState);
   }, []);
 
-  const handleDelete = useCallback(() => {
-    // TODO: implement
-  }, []);
+  const handleDelete = useCallback(async () => {
+    setState((current) => ({...current, isFormLoading: true}));
+    try {
+      const response = await fetch('/api/user-program', {
+        method: 'DELETE',
+        body: JSON.stringify({id: state.formDefaultValues?.id}),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error deleting user program');
+      }
+      router.refresh();
+      setState((current) => ({...current, isFormShowing: false}));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setState((current) => ({...current, isFormLoading: false}));
+    }
+  }, [state.formDefaultValues]);
 
   return (
     <div>
@@ -122,7 +166,7 @@ const UserProgramList = ({
                   ))}
               </div>
               <div className="mt-4">
-                <Button label="Edit" />
+                <Button label="Edit" onClick={handleEditClick(program)} />
               </div>
             </div>
           ))}

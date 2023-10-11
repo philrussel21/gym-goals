@@ -68,7 +68,7 @@ export const PUT = async (request: NextRequest): Promise<NextResponse> => {
     return NextResponse.json({error: userError?.message ?? 'Error fetching user'}, {status: 401});
   }
 
-  const {data, error} = await supabase
+  const {error} = await supabase
   .from(userExercisesTable)
   .update({
     ...updatedExercise,

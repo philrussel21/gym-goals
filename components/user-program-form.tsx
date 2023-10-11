@@ -4,6 +4,7 @@ import {ExerciseOptionDTO} from '@app/app/api/dashboard/route';
 import {useForm} from 'react-hook-form';
 import Button from './button';
 import {isNil} from 'remeda';
+import {useEffect} from 'react';
 
 type UserProgramFormProperties = {
   isLoading: boolean;
@@ -33,10 +34,18 @@ const UserProgramForm = ({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: {errors},
   } = useForm<UserProgramFormValues>({
     defaultValues,
   });
+
+  useEffect(() => {
+    console.log(defaultValues);
+    if (!isNil(defaultValues)) {
+      setValue('programExercises', defaultValues.programExercises);
+    }
+  }, []);
 
   return (
     <form className="p-4" onSubmit={handleSubmit(onSubmit)}>
